@@ -1,0 +1,107 @@
+---
+title: "Validazione"
+format: html
+execute:
+  echo: TRUE    
+  warning: FALSE
+  message: FALSE
+  output: TRUE
+theme: simplex
+---
+
+# Introduction
+
+```{r}
+library(dplyr)
+library(esvis) ## Hedge's G 
+library(psych) # Omega
+library(car) # Levene test
+```
+
+```{r, echo=FALSE}
+VAIAK = read.csv("C:\\Users\\matte\\OneDrive\\Desktop\\VAIAK.csv")
+AFS = read.csv("C:\\Users\\matte\\OneDrive\\Desktop\\AFS.csv")
+BICB = read.csv("C:\\Users\\matte\\OneDrive\\Desktop\\BICB.csv")
+CAQ = read.csv("C:\\Users\\matte\\OneDrive\\Desktop\\CAQ.csv")
+```
+
+Per validare il questionario VAIAK, controlliamo la reliability e validity. 
+Ipotizziamo i seguenti risultati:
+
+-   Per internal reliability:
+
+    -   [ ] Omega di McDonald ($\omega$) \> .70 per AI e AK
+
+-   Per validity:
+
+    -   [ ] AI e AK maggiori in art experts rispetto a lay people
+    -   [ ] Alta correlazione tra AK e AF
+    -   [ ] Bassa correlazione tra le variabili del VAIAK (AI e AK) e misure della creatività (BICB e CAQ)
+
+# Internal reliability
+
+Esempio di script utilizzato:
+
+```{r, results='hide', fig.show='hide'}
+omega = VAIAK %>%                                 
+  select(starts_with("AI")) %>%
+  omega
+```
+
+## Art interest
+
+```{r, results='hide', echo=FALSE, fig.show='hide'}
+omega = VAIAK %>%                                 
+  select(starts_with("AI")) %>%
+  omega
+
+omega_ai_tot = omega$omega.tot
+
+omega = VAIAK %>% 
+  filter(D_Expertise == "Expert") %>%         # Only experts
+  select(starts_with("AI")) %>% 
+  omega
+
+omega_ai_exp = omega$omega.tot
+
+omega = VAIAK %>% 
+  filter(D_Expertise == "Lay person") %>%         # Only experts
+  select(starts_with("AI")) %>% 
+  omega
+
+omega_ai_lay = omega$omega.tot
+```
+
+Omega di McDonald ($\omega$) sull'Art Interest:
+
+```{r, echo=FALSE}
+cat(sprintf("Total omega: %f", omega_ai_tot))
+
+cat(sprintf("Experts omega: %f", omega_ai_exp))
+
+cat(sprintf("Lay people omega: %f", omega_ai_lay))
+```
+
+## Art knowledge
+
+```{r, results='hide', echo=FALSE, fig.show='hide'}
+omega = VAIAK %>% 
+  select(ends_with("Numeric")) %>%
+  omega
+
+omega_ak_tot = omega$omega.tot
+  
+omega = VAIAK %>% 
+  filter(D_Expertise == "Expert") %>%  # only experts
+  select(ends_with("Numeric")) %>%
+  omega
+
+omega_ak_exp = omega$omega.tot
+
+omega = VAIAK %>% 
+  filter(D_Expertise == "Lay person") %>% # only lay people
+  select(ends_with("Numeric")) %>%
+  omega
+
+omega_ak_lay = omega$omega.tot
+```

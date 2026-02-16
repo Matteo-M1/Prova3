@@ -1,0 +1,534 @@
+---
+title: "Analisi IRT"
+format: html
+execute:
+  echo: FALSE    
+  warning: FALSE
+  message: FALSE
+  output: TRUE
+theme: simplex
+---
+
+```{r}
+library(lavaan) # CFA analysis
+library(corrplot) #corrplot
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(mirt) # IRT analysis
+```
+
+```{r, results='hide', fig.show='hide'}
+VAIAK = read.csv("C:\\Users\\matte\\OneDrive\\Desktop\\VAIAK.csv")
+```
+
+# IRT
+
+Svolgiamo quindi delle analisi IRT. 
+
+IMPORTANTE: mi è stato fatto notare che 537 partecipanti potrebbero essere troppo pochi per l'analisi GRM.
+
+## Art interest
+
+Per AI svolgiamo una GRM.
+
+Come prima cosa osserviamo il global fit del modello. 
+
+```{r}
+AI = VAIAK %>%
+  select(starts_with("AI"))
+
+AI_grm = mirt(AI, 1, itemtype = "graded") # run the model
+
+coef = coef(AI_grm, IRTpars = TRUE, simplify = TRUE) # item parameters
+
+M2(AI_grm, type = "C2") # global fit
+```
+
+Sebbene il RMSEA sia sopra le aspettative, gli altri indici mostrano un buon fit. 
+
+Di seguito presento il grafico con la curva di informazione, ossia quanto informativa è la scala in rapporto all'abilità $\theta$ del partecipante. 
+
+```{r}
+theta = seq(-4, 4, length.out = 1000)
+
+test_info = testinfo(AI_grm, Theta = theta)
+
+df = data.frame(
+  theta = theta, 
+  information = test_info)
+
+ggplot(df, aes(x = theta, y=information)) +
+  geom_line(color = "black", linewidth = 1.2) +
+      scale_fill_manual(values=c("black")) +
+  ylim(0, 25) +
+  theme_bw(18) + 
+  theme(panel.border = element_rect(color = "black", fill = NA),
+        text = element_text(family = "sourcesans"),
+        axis.ticks.length = unit(0.4, "cm"), 
+        axis.text.x = element_text(size = 15, color = "black"),
+        axis.text.y = element_text(size = 15, color = "black"),
+        axis.title = element_text(size = 20), 
+        legend.position = c(0.20, 0.7),
+        legend.text = element_text(size = 14), 
+        legend.title = element_text(size = 14), 
+        legend.background = element_rect(
+          color = "black",  
+          linetype = "solid"))
+```
+
+In generale si può notare che dopo che $\theta$ supera lo 0, diventa man mano meno informativa. Quindi si può ipotizzare un effetto tetto tale per cui la scala è informativa principalmente per i partecipnati con bassa informazione. 
+
+In effetti guardando la distribuzione dei risultati si può notare  una concentrazione nella parte finale della distribuzione. 
+
+```{r}
+
+ggplot(VAIAK, aes(x = Part_A)) +
+  geom_density(alpha=0.8) + 
+  xlim(7, 77) +
+  ylim(0.0, 0.06) +
+  labs(x = "Art Interest", y = "Density") +
+  scale_fill_manual(values=c("black")) +
+  theme_bw(18) + 
+  theme(panel.border = element_rect(color = "black", fill = NA),
+        text = element_text(family = "sourcesans"),
+        axis.ticks.length = unit(0.4, "cm"), 
+        axis.text.x = element_text(size = 15, color = "black"),
+        axis.text.y = element_text(size = 15, color = "black"),
+        axis.title = element_text(size = 20), 
+        legend.position = c(0.20, 0.7),
+        legend.text = element_text(size = 14), 
+        legend.title = element_text(size = 14), 
+        legend.background = element_rect(
+          color = "black",  
+          linetype = "solid"))
+```
+
+Di seguito analizziamo gli indici dei singoli item. 
+
+```{r}
+coef$items
+
+plot(AI_grm, type = "trace", 
+     facet_items = TRUE) # ICCs and category functioning
+```
+
+La $a$ indica quanto varia il punteggio in base all'abilità $\theta$. In altre parole, quanto è informativo in funzione della abilità del partecipante. Tutti gli item hanno una $a$ alta, eccetto l'item AI_1_7. Questo vuol dire che un partecipante con un alta $\theta$ non necessariamente selezionerà un alto punteggio nell'item AI_1_7.
+
+Gli indici $b$ rappresentano la difficoltà di ciascun item, ossia il punto sull'asse dove la probabilità di risposta supera il 50%. Si può notare come la $b6$ di AI_1_7 presenta il punteggio più alto, il che indica che è molto raro che un partecipante selezioni quella risposta.
+
+Item AI_1_7: Vengo da una famiglia che si interessa di arte
+
+```{r}
+itemfit(AI_grm) # item fit
+
+summary(AI_grm) # threshold check
+```
+
+Per quanto riguarda gli item fit, si può notare che tutti presentano un $p$ < .05, eccetto AI_1_5. Considerando anche gli altri indici dello stesso item, faccio fatica a interpretare questo dato. 
+
+AI_1_5: Sono sempre alla ricerca di nuove sensazioni ed esperienze artistiche
+
+Se guardiamo poi l'indice $F1$ notiamo che hanno tutti valori maggiori di di 0.5, eccetto AI_1_7. $F1$ è un indicatore del legame tra l'item e il fattore. Inoltre lo stesso item presenta un $h2$ molto basso. L'indice $h2$ indica quanta varianza dell'item è spiegata dal fattore, quindi AI. 
+
+In generale quindi l'AI è una scala informativa principalmente per persone con basso interesse verso l'arte. 
+
+Tra tutti gli item il AI_1_7, ossia quanto la famiglia era interessata all'arte, è l'item che più si distacca dal fattore e dal comportamento degli altri item. Nella sezione in fondo al documento ([Extra](#extra)) ho inserito i grafici con le frequenze di risposta e si può notare che abbia una distribuzione diversa rispetto a quella degli altri item.  
+
+A livello teorico questa cosa ha senso, dato che mentre gli altri fattori sono più legati all'interesse del partecipante o ai suoi comportamenti, questo è legato ad altre persone. 
+
+## Art knowledge
+
+### Part B
+
+Per la AK prima facciamo una 2PL sulla parte B. La parte B è una scelta forzata tra 4 possibilità.
+
+```{r}
+AK_PartB = VAIAK %>%
+  select(starts_with("B") & ends_with("Numeric"))
+
+AK_PartB_2pl = mirt(AK_PartB, 1, itemtype = "2PL") # run the model
+
+coef = coef(AK_PartB_2pl, IRTpars = TRUE, simplify = TRUE) # item parameters
+
+M2(AK_PartB_2pl, type = "C2") # global fit
+```
+
+Gli indici rispettano tutti quanto le aspettative indicando un buon fit globale. 
+
+Poi possiamo osservare gli indici di $a$ e $b$ per ciascun item. 
+
+```{r}
+coef$items
+
+plot(AK_PartB_2pl, type = "trace", 
+     facet_items = TRUE) # ICCs and category functioning
+
+itemfit(AK_PartB_2pl) # item fit
+
+summary(AK_PartB_2pl) # threshold check
+```
+
+In questo caso l'item $B6$ presenta una $a$ molto basso, così come molto basso è il $F1$. 
+
+B6:![B6](images/B6.jpg){width="40%"} 
+
+Nella storia dell'arte, qual è il modo corretto di definire la tecnica dell'opera d'arte raffigurata?
+
+-   Tecnica mista/Mixed Media
+-   Multimedia
+-   Intermedia/arte intermediale
+-   New Media
+
+Questo item era già stato considerato problematico dalla Specker. Infatti aveva già cambiato una delle possibili risposte. Il problema precedente era che uno dei distrattori era troppo efficace. 
+
+Se guardiamo il grafico nella sezione ([Extra](#extra)) o i numeri qui sotto presentati: 
+
+```{r}
+B6 = VAIAK %>%
+  select(starts_with("B6") & !ends_with("Numeric"))
+
+table(B6)/nrow(B6)
+```
+
+notiamo che la risposta 1, la corretta, è molto scelta, infatti $B6$ è l'item con la $b$ più bassa.
+
+Quindi $B6$ potrebbe essere diventato un item talmente facile da non essere più informativo. 
+
+Ad ogni modo l'analisi svolta con 2PL mostra un comportamento buono, quindi non credo sia necessario o consigliabile un cambiamento. 
+
+### Part C
+
+Per la parte C svolgiamo la stessa analisi.
+
+```{r}
+AK_PartC = VAIAK %>%
+  select(starts_with("C") & ends_with("Numeric"))
+         
+AK_PartC_2pl = mirt(AK_PartC, 1, itemtype = "2PL") # run the model
+
+coef = coef(AK_PartC_2pl, IRTpars = TRUE, simplify = TRUE) # item parameters
+
+M2(AK_PartB_2pl, type = "C2") # global fit
+```
+
+Anche in questo caso gli indici di fit sembrano rispettare le aspettative, indicando in generale che i dati si adattano bene al modello. 
+
+```{r}
+coef$items
+
+plot(AK_PartC_2pl, type = "trace", 
+     facet_items = TRUE) # ICCs and category functioning
+```
+
+Interessante notare come C3_1 e C3_2 abbiano rispettivamente il $b$ più basso e più alto di tutti. Questo indica che il nome dell'artista di C3 è estremamente facile, mentre lo stile molto difficile.
+
+C3: ![C3](images/C3.jpg){width="40%"}
+
+Altra cosa interessante è C6, che invece presenta il $a$ più ripido di tutti. Questo indica che la capacità di rispondere correttamente è molto legata alla abilità del participante.
+
+C6: ![C6](images/C6.jpg){width="40%"}
+
+```{r}
+itemfit(AK_PartC_2pl) # item fit
+
+summary(AK_PartC_2pl) # threshold check
+```
+
+Comunque si può notare dall'indice $F1$ e $a$ che in generale tutti gli item hanno un legame con l'abilità e il costrutto. 
+
+L'unico item problematico potrebbe essere C3, dato che C3_2, ossia l'item più difficile, presenta anche il $a$ più basso, il che indica che la sua difficoltà  non è molto legata all'abilità del partecipante. 
+
+In effetti Van Gogh è generalmente inserito nel movimento Post-impressionista, per comodità di spiegazione, ma chi studia storia dell'arte sa che non ha preso parte direttamente a nessun movimento, in quanto era un artista molto solitario. 
+
+### Total
+
+Infine ho svolto le analisi sulla Part B e C insieme, ossia su tutta la scala AK.
+
+```{r}
+AK = VAIAK %>%
+  select(ends_with("Numeric"))
+         
+AK_2pl = mirt(AK, 1, itemtype = "2PL") # run the model
+
+coef = coef(AK_2pl, IRTpars = TRUE, simplify = TRUE) # item parameters
+
+M2(AK_2pl, type = "C2") # global fit
+```
+
+Di seguito presento il grafico con la curva di informazione. 
+
+```{r}
+theta = seq(-4, 4, length.out = 1000)
+
+test_info = testinfo(AK_2pl, Theta = theta)
+
+df = data.frame(
+  theta = theta, 
+  information = test_info)
+
+ggplot(df, aes(x = theta, y=information)) +
+  geom_line(color = "black", linewidth = 1.2) +
+    scale_fill_manual(values=c("black")) +
+  ylim(0, 25) +
+  theme_bw(18) + 
+  theme(panel.border = element_rect(color = "black", fill = NA),
+        text = element_text(family = "sourcesans"),
+        axis.ticks.length = unit(0.4, "cm"), 
+        axis.text.x = element_text(size = 15, color = "black"),
+        axis.text.y = element_text(size = 15, color = "black"),
+        axis.title = element_text(size = 20), 
+        legend.position = c(0.20, 0.7),
+        legend.text = element_text(size = 14), 
+        legend.title = element_text(size = 14), 
+        legend.background = element_rect(
+          color = "black",  
+          linetype = "solid"))
+```
+
+E la distribuzione dei risultati AK. 
+
+```{r}
+ggplot(VAIAK, aes(x = Art_knowledge)) +
+  geom_density(alpha=0.8) + 
+  xlim(0, 26) +
+  ylim(-0.00, 0.12) +
+  labs(x = "Art Knowledge", y = "Density") +
+  scale_fill_manual(values=c("black")) +
+  theme_bw(18) + 
+  theme(panel.border = element_rect(color = "black", fill = NA),
+        text = element_text(family = "sourcesans"),
+        axis.ticks.length = unit(0.4, "cm"), 
+        axis.text.x = element_text(size = 15, color = "black"),
+        axis.text.y = element_text(size = 15, color = "black"),
+        axis.title = element_text(size = 20), 
+        legend.position = c(0.20, 0.7),
+        legend.text = element_text(size = 14), 
+        legend.title = element_text(size = 14), 
+        legend.background = element_rect(
+          color = "black",  
+          linetype = "solid"))
+```
+
+In generale si nota una distribuzione più normale dei dati, e quindi un minore effetto soffitto. 
+
+Di seguito gli indici dei singoli item. 
+
+```{r}
+coef$items
+
+plot(AK_2pl, type = "trace", 
+     facet_items = TRUE) # ICCs and category functioning
+```
+
+```{r}
+itemfit(AK_2pl) # item fit
+
+summary(AK_2pl) # threshold check
+```
+
+## Conclusioni 
+
+In conclusione: 
+
+La scala AI sembra essere poco informativa per i partecipanti più interessati e potrebbe avere un effetto soffitto. Le analisi GRM hanno mostrato che l'item AI_1_7 non è informativo rispetto alla capacità del partecipante o al suo interesse. 
+
+Per la scala AK, le analisi IRT hanno mostrato degli indici accettabili. 
+Tra gli item problematici possiamo osservare B6, in quanto anch'esso non legato alla capacità del partecipante. Un altro potrebbe essere la coppia di item C3_1 e C3_2, in quanto troppo facile il primo e troppo difficile e poco informativo il secondo. 
+
+## Extra
+
+### Frequenze di risposta AI
+
+```{r, results='hide', fig.show='hide'}
+ParteA = VAIAK %>%
+  select(D_Expertise, AI_1_1:AI_2_4)
+
+ParteA = ParteA %>%
+  pivot_longer(
+    cols = starts_with("AI"),
+    names_to = "Domanda",
+    values_to = "Punteggio") %>%
+  group_by(Domanda) %>%
+  summarise(
+    All = sum(Punteggio, na.rm = TRUE)/nrow(VAIAK),
+    Experts = sum(Punteggio[D_Expertise == "Expert"], na.rm = TRUE)
+    /nrow(VAIAK[VAIAK$D_Expertise=="Expert",]),
+    Novice = sum(Punteggio[D_Expertise == "Lay person"], na.rm = TRUE)
+    /nrow(VAIAK[VAIAK$D_Expertise=="Lay person",]))
+```
+
+```{r}
+knitr::kable(ParteA)
+```
+
+```{r}
+barplot(table(VAIAK$AI_1_1)/
+                    nrow(VAIAK), 
+        main = "AI_1_1")
+
+barplot(table(VAIAK$AI_1_2)/
+                    nrow(VAIAK), 
+        main = "AI_1_2")
+
+barplot(table(VAIAK$AI_1_3)/
+                    nrow(VAIAK), 
+        main = "AI_1_3")
+
+barplot(table(VAIAK$AI_1_4)/
+                    nrow(VAIAK), 
+        main = "AI_1_4")
+
+barplot(table(VAIAK$AI_1_5)/
+                    nrow(VAIAK), 
+        main = "AI_1_5")
+
+barplot(table(VAIAK$AI_1_6)/
+                    nrow(VAIAK), 
+        main = "AI_1_6")
+
+barplot(table(VAIAK$AI_1_7)/
+                    nrow(VAIAK), 
+        main = "AI_1_7")
+
+barplot(table(VAIAK$AI_2_1)/
+                    nrow(VAIAK), 
+        main = "AI_2_1")
+
+barplot(table(VAIAK$AI_2_2)/
+                    nrow(VAIAK), 
+        main = "AI_2_2")
+
+barplot(table(VAIAK$AI_2_3)/
+                    nrow(VAIAK), 
+        main = "AI_2_3")
+
+barplot(table(VAIAK$AI_2_4)/
+                    nrow(VAIAK), 
+        main = "AI_2_4")
+```
+
+### Frequenze di risposta AK - parte B
+
+```{r, results='hide', fig.show='hide'}
+ParteB = VAIAK %>%
+  select(D_Expertise, B1_Numeric:B6_Numeric)
+
+ParteB = ParteB %>%
+  pivot_longer(
+    cols = starts_with("B") & ends_with("Numeric"),
+    names_to = "Domanda",
+    values_to = "Punteggio") %>%
+  group_by(Domanda) %>%
+  summarise(
+    All = sum(Punteggio, na.rm = TRUE)/nrow(VAIAK),
+    Experts = sum(Punteggio[D_Expertise == "Expert"], na.rm = TRUE)
+    /nrow(VAIAK[VAIAK$D_Expertise=="Expert",]),
+    Novice = sum(Punteggio[D_Expertise == "Lay person"], na.rm = TRUE)
+    /nrow(VAIAK[VAIAK$D_Expertise=="Lay person",]))
+```
+
+```{r}
+knitr::kable(ParteB)
+```
+
+```{r}
+barplot = barplot(colSums(VAIAK %>%                                                           
+                            select(starts_with("B")) %>%
+                            select(ends_with("Numeric")))/
+                    nrow(VAIAK), 
+                  ylim = c(0, 1), 
+                  names.arg= c("David", "Venus", "Sebastian", "Swan", "Baptist", "Mixed Media"), 
+                  col = rep(c("steelblue", "firebrick3")), 
+                  main = "Frequenza risposte corrette")
+
+
+text(x = barplot, 
+     y = colSums(VAIAK %>%                                                           
+                   select(starts_with("B")) %>%
+                   select(ends_with("Numeric")))/
+       nrow(VAIAK),
+     labels = round(colSums(VAIAK %>%                                                           
+                              select(starts_with("B")) %>%
+                              select(ends_with("Numeric")))/
+                      nrow(VAIAK), 2),
+     pos = 3,         
+     cex = 0.8,       
+     col = "black")
+
+barplot(table(VAIAK$B1)/
+                    nrow(VAIAK), 
+        main = "B1 (3 = Correct)")
+
+barplot(table(VAIAK$B2)/
+                    nrow(VAIAK), 
+        main = "B2 (3 = Correct)")
+
+barplot(table(VAIAK$B3)/
+                    nrow(VAIAK), 
+        main = "B3 (2 = Correct)")
+
+barplot(table(VAIAK$B4)/
+                    nrow(VAIAK), 
+        main = "B4 (2 = Correct)")
+
+barplot(table(VAIAK$B5)/
+                    nrow(VAIAK), 
+        main = "B5 (3 = Correct)")
+
+barplot(table(VAIAK$B6)/
+                    nrow(VAIAK), 
+        main = "B6 (1 = Correct)")
+```
+
+### Frequenze di risposta AK - parte C
+
+```{r, results='hide', fig.show='hide'}
+ParteC = VAIAK %>%
+  select(D_Expertise, C1_1_Numeric:C10_2_Numeric)
+
+ParteC = ParteC %>%
+  pivot_longer(
+    cols = starts_with("C") & ends_with("Numeric"),
+    names_to = "Domanda",
+    values_to = "Punteggio") %>%
+  group_by(Domanda) %>%
+  summarise(
+    All = sum(Punteggio, na.rm = TRUE)/nrow(VAIAK),
+    Experts = sum(Punteggio[D_Expertise == "Expert"], na.rm = TRUE)
+    /nrow(VAIAK[VAIAK$D_Expertise=="Expert",]),
+    Novice = sum(Punteggio[D_Expertise == "Lay person"], na.rm = TRUE)
+    /nrow(VAIAK[VAIAK$D_Expertise=="Lay person",]))
+```
+
+```{r}
+knitr::kable(ParteC)
+```
+
+```{r}
+barplot = barplot(colSums(VAIAK %>%                                                           
+                            select(starts_with("C")) %>%
+                            select(ends_with("Numeric")))/
+                    nrow(VAIAK),
+                  ylim = c(0, 1.2), 
+                  names.arg = c("C1_1", "C1_2", "C2_1", "C2_2", 
+                                "C3_1", "C3_2", "C4_1", "C4_2", 
+                                "C5_1", "C5_2", "C6_1", "C6_2", 
+                                "C7_1", "C7_2", "C8_1", "C8_2", 
+                                "C9_1", "C9_2", "C10_1", "C10_2"), 
+                  col = rep(c("steelblue", "firebrick3")))
+
+
+text(x = barplot, 
+     y = colSums(VAIAK %>%                                                           
+                   select(starts_with("C")) %>%
+                   select(ends_with("Numeric")))/
+       nrow(VAIAK),
+     labels = round(colSums(VAIAK %>%                                                           
+                        select(starts_with("C")) %>%
+                        select(ends_with("Numeric")))/
+       nrow(VAIAK),2),
+     pos = 3,         
+     cex = 0.8,       
+     col = "black")
+```

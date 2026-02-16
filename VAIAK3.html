@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Analisi IRT</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="VAIAK3_files/libs/clipboard/clipboard.min.js"></script>
+<script src="VAIAK3_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="VAIAK3_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="VAIAK3_files/libs/quarto-html/popper.min.js"></script>
+<script src="VAIAK3_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="VAIAK3_files/libs/quarto-html/anchor.min.js"></script>
+<link href="VAIAK3_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="VAIAK3_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="VAIAK3_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="VAIAK3_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="VAIAK3_files/libs/bootstrap/bootstrap-a0dfbe2913e9eb72eb5d3581013d8219.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Analisi IRT</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="irt" class="level1">
+<h1>IRT</h1>
+<p>Svolgiamo quindi delle analisi IRT.</p>
+<p>IMPORTANTE: mi è stato fatto notare che 537 partecipanti potrebbero essere troppo pochi per l’analisi GRM.</p>
+<section id="art-interest" class="level2">
+<h2 class="anchored" data-anchor-id="art-interest">Art interest</h2>
+<p>Per AI svolgiamo una GRM.</p>
+<p>Come prima cosa osserviamo il global fit del modello.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>            M2 df p     RMSEA    RMSEA_5  RMSEA_95      SRMSR       TLI
+stats 320.4087 44 0 0.1082598 0.09721043 0.1194318 0.06027479 0.9434769
+            CFI
+stats 0.9547815</code></pre>
+</div>
+</div>
+<p>Sebbene il RMSEA sia sopra le aspettative, gli altri indici mostrano un buon fit.</p>
+<p>Di seguito presento il grafico con la curva di informazione, ossia quanto informativa è la scala in rapporto all’abilità <span class="math inline">\(\theta\)</span> del partecipante.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In generale si può notare che dopo che <span class="math inline">\(\theta\)</span> supera lo 0, diventa man mano meno informativa. Quindi si può ipotizzare un effetto tetto tale per cui la scala è informativa principalmente per i partecipnati con bassa informazione.</p>
+<p>In effetti guardando la distribuzione dei risultati si può notare una concentrazione nella parte finale della distribuzione.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Di seguito analizziamo gli indici dei singoli item.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>               a         b1         b2         b3          b4          b5
+AI_1_1 1.4106358 -3.2115434 -2.4376535 -1.8377165 -1.24153153 -0.52229254
+AI_1_2 2.5517771 -2.9429568 -2.1327866 -1.5201911 -0.98202463 -0.33094319
+AI_1_3 1.1497268 -3.3848686 -1.9564202 -0.9624218  0.05842349  1.30320076
+AI_1_4 3.3065363 -2.6188069 -1.9789197 -1.4048486 -0.83990949 -0.09120015
+AI_1_5 2.3985331 -2.4067933 -1.6185798 -0.9878230 -0.40410159  0.32836905
+AI_1_6 2.0760561 -2.9383199 -2.3103618 -1.7978982 -1.14794534 -0.35780283
+AI_1_7 0.6257134 -2.5255415 -1.2544722 -0.1637052  0.94703514  2.09145838
+AI_2_1 1.6742229 -2.0589314 -1.1790455 -0.2808722  0.78607606  1.92295857
+AI_2_2 2.0892177 -0.5587519 -0.1046904  0.2205769  0.64683689  1.23590551
+AI_2_3 1.9166060 -2.4056745 -1.9155214 -1.5414445 -1.16502786 -0.49272857
+AI_2_4 1.7704323 -0.3356309  0.2467179  0.7482368  1.28502053  2.11551737
+                 b6
+AI_1_1  0.130956796
+AI_1_2  0.272414425
+AI_1_3  2.256711755
+AI_1_4  0.549200287
+AI_1_5  0.957763975
+AI_1_6  0.315841204
+AI_1_7  3.712544681
+AI_2_1  2.855692219
+AI_2_2  1.659082747
+AI_2_3 -0.003818851
+AI_2_4  2.929082734</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La <span class="math inline">\(a\)</span> indica quanto varia il punteggio in base all’abilità <span class="math inline">\(\theta\)</span>. In altre parole, quanto è informativo in funzione della abilità del partecipante. Tutti gli item hanno una <span class="math inline">\(a\)</span> alta, eccetto l’item AI_1_7. Questo vuol dire che un partecipante con un alta <span class="math inline">\(\theta\)</span> non necessariamente selezionerà un alto punteggio nell’item AI_1_7.</p>
+<p>Gli indici <span class="math inline">\(b\)</span> rappresentano la difficoltà di ciascun item, ossia il punto sull’asse dove la probabilità di risposta supera il 50%. Si può notare come la <span class="math inline">\(b6\)</span> di AI_1_7 presenta il punteggio più alto, il che indica che è molto raro che un partecipante selezioni quella risposta.</p>
+<p>Item AI_1_7: Vengo da una famiglia che si interessa di arte</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     item    S_X2 df.S_X2 RMSEA.S_X2 p.S_X2
+1  AI_1_1 140.987     117      0.020  0.065
+2  AI_1_2 105.235      84      0.022  0.058
+3  AI_1_3 131.297     139      0.000  0.667
+4  AI_1_4  93.759      76      0.021  0.082
+5  AI_1_5 134.876     104      0.024  0.022
+6  AI_1_6  78.960      93      0.000  0.850
+7  AI_1_7 121.120     118      0.007  0.403
+8  AI_2_1 109.441     107      0.007  0.416
+9  AI_2_2 109.297     109      0.002  0.474
+10 AI_2_3  87.221     102      0.000  0.851
+11 AI_2_4 101.703     105      0.000  0.573</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          F1    h2
+AI_1_1 0.638 0.407
+AI_1_2 0.832 0.692
+AI_1_3 0.560 0.313
+AI_1_4 0.889 0.791
+AI_1_5 0.816 0.665
+AI_1_6 0.773 0.598
+AI_1_7 0.345 0.119
+AI_2_1 0.701 0.492
+AI_2_2 0.775 0.601
+AI_2_3 0.748 0.559
+AI_2_4 0.721 0.520
+
+SS loadings:  5.757 
+Proportion Var:  0.523 
+
+Factor correlations: 
+
+   F1
+F1  1</code></pre>
+</div>
+</div>
+<p>Per quanto riguarda gli item fit, si può notare che tutti presentano un <span class="math inline">\(p\)</span> &lt; .05, eccetto AI_1_5. Considerando anche gli altri indici dello stesso item, faccio fatica a interpretare questo dato.</p>
+<p>AI_1_5: Sono sempre alla ricerca di nuove sensazioni ed esperienze artistiche</p>
+<p>Se guardiamo poi l’indice <span class="math inline">\(F1\)</span> notiamo che hanno tutti valori maggiori di di 0.5, eccetto AI_1_7. <span class="math inline">\(F1\)</span> è un indicatore del legame tra l’item e il fattore. Inoltre lo stesso item presenta un <span class="math inline">\(h2\)</span> molto basso. L’indice <span class="math inline">\(h2\)</span> indica quanta varianza dell’item è spiegata dal fattore, quindi AI.</p>
+<p>In generale quindi l’AI è una scala informativa principalmente per persone con basso interesse verso l’arte.</p>
+<p>Tra tutti gli item il AI_1_7, ossia quanto la famiglia era interessata all’arte, è l’item che più si distacca dal fattore e dal comportamento degli altri item. Nella sezione in fondo al documento (<a href="#extra">Extra</a>) ho inserito i grafici con le frequenze di risposta e si può notare che abbia una distribuzione diversa rispetto a quella degli altri item.</p>
+<p>A livello teorico questa cosa ha senso, dato che mentre gli altri fattori sono più legati all’interesse del partecipante o ai suoi comportamenti, questo è legato ad altre persone.</p>
+</section>
+<section id="art-knowledge" class="level2">
+<h2 class="anchored" data-anchor-id="art-knowledge">Art knowledge</h2>
+<section id="part-b" class="level3">
+<h3 class="anchored" data-anchor-id="part-b">Part B</h3>
+<p>Per la AK prima facciamo una 2PL sulla parte B. La parte B è una scelta forzata tra 4 possibilità.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>            M2 df         p      RMSEA RMSEA_5  RMSEA_95      SRMSR       TLI
+stats 10.33741  9 0.3238665 0.01665057       0 0.0530178 0.02976163 0.9879586
+            CFI
+stats 0.9927751</code></pre>
+</div>
+</div>
+<p>Gli indici rispettano tutti quanto le aspettative indicando un buon fit globale.</p>
+<p>Poi possiamo osservare gli indici di <span class="math inline">\(a\)</span> e <span class="math inline">\(b\)</span> per ciascun item.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                   a          b g u
+B1_Numeric 1.3051913 -1.4932243 0 1
+B2_Numeric 0.9580738  0.1226493 0 1
+B3_Numeric 1.7099325 -0.6076650 0 1
+B4_Numeric 0.9627476  1.2247881 0 1
+B5_Numeric 1.1817595 -1.2859649 0 1
+B6_Numeric 0.3825325 -2.9189087 0 1</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        item  S_X2 df.S_X2 RMSEA.S_X2 p.S_X2
+1 B1_Numeric 9.327       3      0.063  0.025
+2 B2_Numeric 2.025       3      0.000  0.567
+3 B3_Numeric 2.037       3      0.000  0.565
+4 B4_Numeric 4.163       2      0.045  0.125
+5 B5_Numeric 4.581       3      0.031  0.205
+6 B6_Numeric 1.441       3      0.000  0.696</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              F1     h2
+B1_Numeric 0.609 0.3703
+B2_Numeric 0.491 0.2406
+B3_Numeric 0.709 0.5023
+B4_Numeric 0.492 0.2424
+B5_Numeric 0.570 0.3253
+B6_Numeric 0.219 0.0481
+
+SS loadings:  1.729 
+Proportion Var:  0.288 
+
+Factor correlations: 
+
+   F1
+F1  1</code></pre>
+</div>
+</div>
+<p>In questo caso l’item <span class="math inline">\(B6\)</span> presenta una <span class="math inline">\(a\)</span> molto basso, così come molto basso è il <span class="math inline">\(F1\)</span>.</p>
+<p>B6:<img src="images/B6.jpg" class="img-fluid" style="width:40.0%" alt="B6"></p>
+<p>Nella storia dell’arte, qual è il modo corretto di definire la tecnica dell’opera d’arte raffigurata?</p>
+<ul>
+<li>Tecnica mista/Mixed Media</li>
+<li>Multimedia</li>
+<li>Intermedia/arte intermediale</li>
+<li>New Media</li>
+</ul>
+<p>Questo item era già stato considerato problematico dalla Specker. Infatti aveva già cambiato una delle possibili risposte. Il problema precedente era che uno dei distrattori era troppo efficace.</p>
+<p>Se guardiamo il grafico nella sezione (<a href="#extra">Extra</a>) o i numeri qui sotto presentati:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>B6
+         1          2          3          4 
+0.74674115 0.03538175 0.13407821 0.08379888 </code></pre>
+</div>
+</div>
+<p>notiamo che la risposta 1, la corretta, è molto scelta, infatti <span class="math inline">\(B6\)</span> è l’item con la <span class="math inline">\(b\)</span> più bassa.</p>
+<p>Quindi <span class="math inline">\(B6\)</span> potrebbe essere diventato un item talmente facile da non essere più informativo.</p>
+<p>Ad ogni modo l’analisi svolta con 2PL mostra un comportamento buono, quindi non credo sia necessario o consigliabile un cambiamento.</p>
+</section>
+<section id="part-c" class="level3">
+<h3 class="anchored" data-anchor-id="part-c">Part C</h3>
+<p>Per la parte C svolgiamo la stessa analisi.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>            M2 df         p      RMSEA RMSEA_5  RMSEA_95      SRMSR       TLI
+stats 10.33741  9 0.3238665 0.01665057       0 0.0530178 0.02976163 0.9879586
+            CFI
+stats 0.9927751</code></pre>
+</div>
+</div>
+<p>Anche in questo caso gli indici di fit sembrano rispettare le aspettative, indicando in generale che i dati si adattano bene al modello.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                      a           b g u
+C1_1_Numeric  1.5473237 -2.66645390 0 1
+C1_2_Numeric  1.7661052 -0.44875376 0 1
+C2_1_Numeric  1.4968853 -0.22860886 0 1
+C2_2_Numeric  1.7034321  0.92756626 0 1
+C3_1_Numeric  1.4045424 -3.02648648 0 1
+C3_2_Numeric  0.7947343  1.90492356 0 1
+C4_1_Numeric  2.0065396 -1.74383537 0 1
+C4_2_Numeric  1.9901147  0.07134133 0 1
+C5_1_Numeric  1.6901920 -1.31176234 0 1
+C5_2_Numeric  1.7782860 -0.12759410 0 1
+C6_1_Numeric  3.2918329  1.22490642 0 1
+C6_2_Numeric  4.0330362  1.27784582 0 1
+C7_1_Numeric  1.7237472  0.05917290 0 1
+C7_2_Numeric  2.1119805 -0.58421257 0 1
+C8_1_Numeric  1.4729926 -0.62691861 0 1
+C8_2_Numeric  2.3232979 -0.19601053 0 1
+C9_1_Numeric  2.6601753 -0.19008367 0 1
+C9_2_Numeric  2.3286115 -0.02665262 0 1
+C10_1_Numeric 1.5697573 -0.29176946 0 1
+C10_2_Numeric 1.6715598 -0.04654721 0 1</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Interessante notare come C3_1 e C3_2 abbiano rispettivamente il <span class="math inline">\(b\)</span> più basso e più alto di tutti. Questo indica che il nome dell’artista di C3 è estremamente facile, mentre lo stile molto difficile.</p>
+<p>C3: <img src="images/C3.jpg" class="img-fluid" style="width:40.0%" alt="C3"></p>
+<p>Altra cosa interessante è C6, che invece presenta il <span class="math inline">\(a\)</span> più ripido di tutti. Questo indica che la capacità di rispondere correttamente è molto legata alla abilità del participante.</p>
+<p>C6: <img src="images/C6.jpg" class="img-fluid" style="width:40.0%" alt="C6"></p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>            item   S_X2 df.S_X2 RMSEA.S_X2 p.S_X2
+1   C1_1_Numeric 12.674       7      0.039  0.080
+2   C1_2_Numeric 13.790      13      0.011  0.389
+3   C2_1_Numeric 22.657      14      0.034  0.066
+4   C2_2_Numeric 13.198      12      0.014  0.355
+5   C3_1_Numeric  5.237       7      0.000  0.631
+6   C3_2_Numeric 17.154      14      0.021  0.248
+7   C4_1_Numeric 16.239       9      0.039  0.062
+8   C4_2_Numeric  7.664      13      0.000  0.865
+9   C5_1_Numeric  7.378      13      0.000  0.882
+10  C5_2_Numeric 10.722      13      0.000  0.634
+11  C6_1_Numeric 18.850       6      0.063  0.004
+12  C6_2_Numeric 12.532       5      0.053  0.028
+13  C7_1_Numeric 11.771      13      0.000  0.547
+14  C7_2_Numeric 12.518      12      0.009  0.405
+15  C8_1_Numeric 18.097      14      0.023  0.202
+16  C8_2_Numeric 16.998      12      0.028  0.150
+17  C9_1_Numeric 11.082      10      0.014  0.351
+18  C9_2_Numeric 14.277      11      0.024  0.218
+19 C10_1_Numeric 12.875      14      0.000  0.536
+20 C10_2_Numeric 16.984      13      0.024  0.200</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 F1    h2
+C1_1_Numeric  0.673 0.453
+C1_2_Numeric  0.720 0.518
+C2_1_Numeric  0.660 0.436
+C2_2_Numeric  0.707 0.500
+C3_1_Numeric  0.636 0.405
+C3_2_Numeric  0.423 0.179
+C4_1_Numeric  0.763 0.582
+C4_2_Numeric  0.760 0.578
+C5_1_Numeric  0.705 0.497
+C5_2_Numeric  0.722 0.522
+C6_1_Numeric  0.888 0.789
+C6_2_Numeric  0.921 0.849
+C7_1_Numeric  0.712 0.506
+C7_2_Numeric  0.779 0.606
+C8_1_Numeric  0.654 0.428
+C8_2_Numeric  0.807 0.651
+C9_1_Numeric  0.842 0.710
+C9_2_Numeric  0.807 0.652
+C10_1_Numeric 0.678 0.460
+C10_2_Numeric 0.701 0.491
+
+SS loadings:  10.811 
+Proportion Var:  0.541 
+
+Factor correlations: 
+
+   F1
+F1  1</code></pre>
+</div>
+</div>
+<p>Comunque si può notare dall’indice <span class="math inline">\(F1\)</span> e <span class="math inline">\(a\)</span> che in generale tutti gli item hanno un legame con l’abilità e il costrutto.</p>
+<p>L’unico item problematico potrebbe essere C3, dato che C3_2, ossia l’item più difficile, presenta anche il <span class="math inline">\(a\)</span> più basso, il che indica che la sua difficoltà non è molto legata all’abilità del partecipante.</p>
+<p>In effetti Van Gogh è generalmente inserito nel movimento Post-impressionista, per comodità di spiegazione, ma chi studia storia dell’arte sa che non ha preso parte direttamente a nessun movimento, in quanto era un artista molto solitario.</p>
+</section>
+<section id="total" class="level3">
+<h3 class="anchored" data-anchor-id="total">Total</h3>
+<p>Infine ho svolto le analisi sulla Part B e C insieme, ossia su tutta la scala AK.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>            M2  df p      RMSEA    RMSEA_5   RMSEA_95      SRMSR       TLI
+stats 904.3739 299 0 0.06146018 0.05684197 0.06600898 0.05420201 0.9385301
+            CFI
+stats 0.9434477</code></pre>
+</div>
+</div>
+<p>Di seguito presento il grafico con la curva di informazione.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>E la distribuzione dei risultati AK.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In generale si nota una distribuzione più normale dei dati, e quindi un minore effetto soffitto.</p>
+<p>Di seguito gli indici dei singoli item.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                      a           b g u
+B1_Numeric    1.0276215 -1.74574108 0 1
+B2_Numeric    0.8758066  0.13614342 0 1
+B3_Numeric    1.2301828 -0.71571479 0 1
+B4_Numeric    0.9214512  1.26539124 0 1
+B5_Numeric    0.7386037 -1.81121040 0 1
+B6_Numeric    0.4432131 -2.54518300 0 1
+C1_1_Numeric  1.5156353 -2.68186898 0 1
+C1_2_Numeric  1.7281977 -0.46464482 0 1
+C2_1_Numeric  1.6621743 -0.22510630 0 1
+C2_2_Numeric  1.7909601  0.90372228 0 1
+C3_1_Numeric  1.4525414 -2.94783416 0 1
+C3_2_Numeric  0.7669289  1.95990741 0 1
+C4_1_Numeric  2.0260640 -1.72972572 0 1
+C4_2_Numeric  2.0047367  0.05903691 0 1
+C5_1_Numeric  1.8056495 -1.27352677 0 1
+C5_2_Numeric  1.8152860 -0.13772387 0 1
+C6_1_Numeric  3.2145453  1.24349407 0 1
+C6_2_Numeric  3.7186232  1.31429990 0 1
+C7_1_Numeric  1.6431951  0.04906277 0 1
+C7_2_Numeric  2.0659008 -0.60120873 0 1
+C8_1_Numeric  1.4660668 -0.63722937 0 1
+C8_2_Numeric  2.2084220 -0.21499834 0 1
+C9_1_Numeric  2.5453805 -0.20945149 0 1
+C9_2_Numeric  2.2668316 -0.04172117 0 1
+C10_1_Numeric 1.5512914 -0.30397680 0 1
+C10_2_Numeric 1.6245692 -0.05841960 0 1</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>            item   S_X2 df.S_X2 RMSEA.S_X2 p.S_X2
+1     B1_Numeric 30.613      18      0.036  0.032
+2     B2_Numeric 29.339      20      0.030  0.081
+3     B3_Numeric 22.602      18      0.022  0.206
+4     B4_Numeric 31.078      18      0.037  0.028
+5     B5_Numeric 15.547      20      0.000  0.744
+6     B6_Numeric 38.727      20      0.042  0.007
+7   C1_1_Numeric 15.541      10      0.032  0.114
+8   C1_2_Numeric 15.047      16      0.000  0.521
+9   C2_1_Numeric 19.962      17      0.018  0.276
+10  C2_2_Numeric  9.604      14      0.000  0.791
+11  C3_1_Numeric 12.475       9      0.027  0.188
+12  C3_2_Numeric 19.231      18      0.011  0.378
+13  C4_1_Numeric  7.534      12      0.000  0.820
+14  C4_2_Numeric 15.180      15      0.005  0.439
+15  C5_1_Numeric 17.368      14      0.021  0.237
+16  C5_2_Numeric 11.475      16      0.000  0.779
+17  C6_1_Numeric  7.475       7      0.011  0.381
+18  C6_2_Numeric 10.732       5      0.046  0.057
+19  C7_1_Numeric 15.356      17      0.000  0.570
+20  C7_2_Numeric  9.451      15      0.000  0.853
+21  C8_1_Numeric 19.691      18      0.013  0.351
+22  C8_2_Numeric 18.643      15      0.021  0.230
+23  C9_1_Numeric 10.132      13      0.000  0.683
+24  C9_2_Numeric 14.304      14      0.006  0.427
+25 C10_1_Numeric  8.789      17      0.000  0.947
+26 C10_2_Numeric 22.141      17      0.024  0.179</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 F1     h2
+B1_Numeric    0.517 0.2672
+B2_Numeric    0.458 0.2094
+B3_Numeric    0.586 0.3432
+B4_Numeric    0.476 0.2267
+B5_Numeric    0.398 0.1585
+B6_Numeric    0.252 0.0635
+C1_1_Numeric  0.665 0.4423
+C1_2_Numeric  0.712 0.5076
+C2_1_Numeric  0.699 0.4882
+C2_2_Numeric  0.725 0.5255
+C3_1_Numeric  0.649 0.4214
+C3_2_Numeric  0.411 0.1688
+C4_1_Numeric  0.766 0.5863
+C4_2_Numeric  0.762 0.5811
+C5_1_Numeric  0.728 0.5295
+C5_2_Numeric  0.730 0.5322
+C6_1_Numeric  0.884 0.7810
+C6_2_Numeric  0.909 0.8268
+C7_1_Numeric  0.695 0.4824
+C7_2_Numeric  0.772 0.5957
+C8_1_Numeric  0.653 0.4259
+C8_2_Numeric  0.792 0.6274
+C9_1_Numeric  0.831 0.6910
+C9_2_Numeric  0.800 0.6395
+C10_1_Numeric 0.674 0.4538
+C10_2_Numeric 0.690 0.4767
+
+SS loadings:  12.051 
+Proportion Var:  0.464 
+
+Factor correlations: 
+
+   F1
+F1  1</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusioni" class="level2">
+<h2 class="anchored" data-anchor-id="conclusioni">Conclusioni</h2>
+<p>In conclusione:</p>
+<p>La scala AI sembra essere poco informativa per i partecipanti più interessati e potrebbe avere un effetto soffitto. Le analisi GRM hanno mostrato che l’item AI_1_7 non è informativo rispetto alla capacità del partecipante o al suo interesse.</p>
+<p>Per la scala AK, le analisi IRT hanno mostrato degli indici accettabili. Tra gli item problematici possiamo osservare B6, in quanto anch’esso non legato alla capacità del partecipante. Un altro potrebbe essere la coppia di item C3_1 e C3_2, in quanto troppo facile il primo e troppo difficile e poco informativo il secondo.</p>
+</section>
+<section id="extra" class="level2">
+<h2 class="anchored" data-anchor-id="extra">Extra</h2>
+<section id="frequenze-di-risposta-ai" class="level3">
+<h3 class="anchored" data-anchor-id="frequenze-di-risposta-ai">Frequenze di risposta AI</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Domanda</th>
+<th style="text-align: right;">All</th>
+<th style="text-align: right;">Experts</th>
+<th style="text-align: right;">Novice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">AI_1_1</td>
+<td style="text-align: right;">5.670391</td>
+<td style="text-align: right;">6.139240</td>
+<td style="text-align: right;">5.259136</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AI_1_2</td>
+<td style="text-align: right;">5.666667</td>
+<td style="text-align: right;">6.295359</td>
+<td style="text-align: right;">5.129568</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AI_1_3</td>
+<td style="text-align: right;">4.350093</td>
+<td style="text-align: right;">4.860760</td>
+<td style="text-align: right;">3.916943</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AI_1_4</td>
+<td style="text-align: right;">5.467411</td>
+<td style="text-align: right;">6.257384</td>
+<td style="text-align: right;">4.803987</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AI_1_5</td>
+<td style="text-align: right;">4.927374</td>
+<td style="text-align: right;">5.620253</td>
+<td style="text-align: right;">4.342193</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AI_1_6</td>
+<td style="text-align: right;">5.707635</td>
+<td style="text-align: right;">6.198312</td>
+<td style="text-align: right;">5.289036</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AI_1_7</td>
+<td style="text-align: right;">3.694600</td>
+<td style="text-align: right;">3.687764</td>
+<td style="text-align: right;">3.674419</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AI_2_1</td>
+<td style="text-align: right;">3.681564</td>
+<td style="text-align: right;">4.329114</td>
+<td style="text-align: right;">3.156146</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AI_2_2</td>
+<td style="text-align: right;">3.221601</td>
+<td style="text-align: right;">4.510548</td>
+<td style="text-align: right;">2.192691</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AI_2_3</td>
+<td style="text-align: right;">5.720670</td>
+<td style="text-align: right;">6.426160</td>
+<td style="text-align: right;">5.126246</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AI_2_4</td>
+<td style="text-align: right;">2.562384</td>
+<td style="text-align: right;">3.464135</td>
+<td style="text-align: right;">1.840532</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-21-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-21-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-21-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-21-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-21-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-21-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-21-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-21-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-21-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-21-11.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="frequenze-di-risposta-ak---parte-b" class="level3">
+<h3 class="anchored" data-anchor-id="frequenze-di-risposta-ak---parte-b">Frequenze di risposta AK - parte B</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Domanda</th>
+<th style="text-align: right;">All</th>
+<th style="text-align: right;">Experts</th>
+<th style="text-align: right;">Novice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">B1_Numeric</td>
+<td style="text-align: right;">0.8175047</td>
+<td style="text-align: right;">0.8818565</td>
+<td style="text-align: right;">0.7607973</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B2_Numeric</td>
+<td style="text-align: right;">0.4748603</td>
+<td style="text-align: right;">0.6033755</td>
+<td style="text-align: right;">0.3720930</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">B3_Numeric</td>
+<td style="text-align: right;">0.6648045</td>
+<td style="text-align: right;">0.8185654</td>
+<td style="text-align: right;">0.5415282</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B4_Numeric</td>
+<td style="text-align: right;">0.2700186</td>
+<td style="text-align: right;">0.3755274</td>
+<td style="text-align: right;">0.1860465</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">B5_Numeric</td>
+<td style="text-align: right;">0.7690875</td>
+<td style="text-align: right;">0.8227848</td>
+<td style="text-align: right;">0.7209302</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B6_Numeric</td>
+<td style="text-align: right;">0.7467412</td>
+<td style="text-align: right;">0.7974684</td>
+<td style="text-align: right;">0.7009967</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-24-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-24-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-24-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-24-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-24-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-24-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="frequenze-di-risposta-ak---parte-c" class="level3">
+<h3 class="anchored" data-anchor-id="frequenze-di-risposta-ak---parte-c">Frequenze di risposta AK - parte C</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Domanda</th>
+<th style="text-align: right;">All</th>
+<th style="text-align: right;">Experts</th>
+<th style="text-align: right;">Novice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">C10_1_Numeric</td>
+<td style="text-align: right;">0.5828678</td>
+<td style="text-align: right;">0.7257384</td>
+<td style="text-align: right;">0.4684385</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C10_2_Numeric</td>
+<td style="text-align: right;">0.5176909</td>
+<td style="text-align: right;">0.6751055</td>
+<td style="text-align: right;">0.3920266</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C1_1_Numeric</td>
+<td style="text-align: right;">0.9571695</td>
+<td style="text-align: right;">0.9789030</td>
+<td style="text-align: right;">0.9335548</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C1_2_Numeric</td>
+<td style="text-align: right;">0.6312849</td>
+<td style="text-align: right;">0.7510549</td>
+<td style="text-align: right;">0.5315615</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C2_1_Numeric</td>
+<td style="text-align: right;">0.5642458</td>
+<td style="text-align: right;">0.7341772</td>
+<td style="text-align: right;">0.4285714</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C2_2_Numeric</td>
+<td style="text-align: right;">0.2569832</td>
+<td style="text-align: right;">0.4345992</td>
+<td style="text-align: right;">0.1162791</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C3_1_Numeric</td>
+<td style="text-align: right;">0.9664804</td>
+<td style="text-align: right;">0.9789030</td>
+<td style="text-align: right;">0.9501661</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C3_2_Numeric</td>
+<td style="text-align: right;">0.2067039</td>
+<td style="text-align: right;">0.2700422</td>
+<td style="text-align: right;">0.1561462</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C4_1_Numeric</td>
+<td style="text-align: right;">0.9031657</td>
+<td style="text-align: right;">0.9451477</td>
+<td style="text-align: right;">0.8637874</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C4_2_Numeric</td>
+<td style="text-align: right;">0.4841713</td>
+<td style="text-align: right;">0.6497890</td>
+<td style="text-align: right;">0.3521595</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C5_1_Numeric</td>
+<td style="text-align: right;">0.8212291</td>
+<td style="text-align: right;">0.8987342</td>
+<td style="text-align: right;">0.7541528</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C5_2_Numeric</td>
+<td style="text-align: right;">0.5418994</td>
+<td style="text-align: right;">0.7088608</td>
+<td style="text-align: right;">0.4086379</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C6_1_Numeric</td>
+<td style="text-align: right;">0.1359404</td>
+<td style="text-align: right;">0.2194093</td>
+<td style="text-align: right;">0.0697674</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C6_2_Numeric</td>
+<td style="text-align: right;">0.1154562</td>
+<td style="text-align: right;">0.2025316</td>
+<td style="text-align: right;">0.0465116</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C7_1_Numeric</td>
+<td style="text-align: right;">0.4878957</td>
+<td style="text-align: right;">0.6118143</td>
+<td style="text-align: right;">0.3887043</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C7_2_Numeric</td>
+<td style="text-align: right;">0.6797020</td>
+<td style="text-align: right;">0.7552743</td>
+<td style="text-align: right;">0.6179402</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C8_1_Numeric</td>
+<td style="text-align: right;">0.6629423</td>
+<td style="text-align: right;">0.7805907</td>
+<td style="text-align: right;">0.5681063</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C8_2_Numeric</td>
+<td style="text-align: right;">0.5698324</td>
+<td style="text-align: right;">0.7088608</td>
+<td style="text-align: right;">0.4584718</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C9_1_Numeric</td>
+<td style="text-align: right;">0.5716946</td>
+<td style="text-align: right;">0.8185654</td>
+<td style="text-align: right;">0.3754153</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C9_2_Numeric</td>
+<td style="text-align: right;">0.5158287</td>
+<td style="text-align: right;">0.7130802</td>
+<td style="text-align: right;">0.3588040</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="VAIAK3_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

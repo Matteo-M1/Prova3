@@ -1,0 +1,255 @@
+---
+title: "Analisi CFA"
+format: 
+  html
+execute:
+  echo: FALSE    
+  warning: FALSE
+  message: FALSE
+  output: TRUE
+theme: simplex
+---
+
+Come precedentemente mostrato in Resoconto analisi 1, il VAIAK ha seguito le aspettative per quanto riguarda le ipotesi precedentemente costruite.
+
+Di seguito si riportano le conclusioni della analisi CFA
+
+```{r}
+library(lavaan) # CFA analysis
+library(corrplot) #corrplot
+library(ggplot2)
+library(dplyr)
+library(mirt) # IRT analysis
+```
+
+```{r, results='hide', fig.show='hide'}
+VAIAK = read.csv("C:\\Users\\matte\\OneDrive\\Desktop\\VAIAK.csv")
+```
+
+# CFA
+
+Per le analisi CFA utilizziamo: 
+
+-   modello unifattoriale 
+-   modello bifattoriale
+-   modello gerarchico
+
+per le singole variabili e confrontiamo gli indici per capire quale modello descriva al meglio i dati. 
+
+## Art interest
+
+Per prima cosa presento gli indici della CFA unifattoriale. 
+
+```{r, results='hide', fig.show='hide'}
+Model_AI_1 = "interest  =~ AI_1_1 + AI_1_2 + AI_1_3 + AI_1_4 + AI_1_5 + AI_1_6 + AI_1_7 +
+                       AI_2_1 + AI_2_2 + AI_2_3 + AI_2_4"  
+
+AI_one = cfa(Model_AI_1, data = VAIAK, std.lv=TRUE)  
+
+parameters = summary(AI_one, fit.measures=TRUE, standardized = TRUE, ci=TRUE) # parameters
+
+parameters = data.frame(parameters$test$standard$stat[1], parameters$test$standard$pvalue, 
+               unname(parameters$fit[9]), 
+               unname(parameters$fit[10]), 
+               unname(parameters$fit[18]), 
+               unname(parameters$fit[25]))
+
+residuals = residuals(AI_one, type = "cor") # residuals
+```
+
+```{r}
+knitr::kable(
+  parameters, 
+  title = c("Modello unifattoriale AI"), 
+  col.names = c("$\\chi^2$","$p$ $\\chi^2$", "CFI", "TLI", "RMSEA", "SRMR"),
+  digits = 2, 
+  align = "c")
+```
+
+Dato che gli indici non mostrano un buon fit, ho analizzato i residui e ho notato che gli item AI_2 tendono a essere molto correlati tra loro. 
+
+```{r}
+residuals = residuals$cov
+
+corrplot(residuals,
+         method = "shade",
+         type = "upper",
+         col.lim = c(-0.6, 0.6))
+```
+
+Ho quindi svolto una CFA bifattoriale, che mostra un migliore fit. 
+
+```{r, results='hide', fig.show='hide'}
+Model_AI_2 = "interest_subj =~ AI_1_1 + AI_1_2 + AI_1_3 + AI_1_4 + AI_1_5 + AI_1_6 + AI_1_7
+
+              interest_beha =~ AI_2_1 + AI_2_2 + AI_2_3 + AI_2_4" # model
+
+AI_bi = cfa(Model_AI_2, data = VAIAK, std.lv=TRUE) # run the model
+
+parameters = summary(AI_bi, fit.measures=TRUE, standardized = TRUE, ci=TRUE) # parameters
+
+parameters = data.frame(parameters$test$standard$stat[1], parameters$test$standard$pvalue, 
+               unname(parameters$fit[9]), 
+               unname(parameters$fit[10]), 
+               unname(parameters$fit[18]), 
+               unname(parameters$fit[25]))
+
+residuals = residuals(AI_bi, type = "cor") # residuals
+```
+
+```{r}
+knitr::kable(
+  parameters, 
+  title = c("Modello bifattoriale AI"), 
+  col.names = c("$\\chi^2$","$p$ $\\chi^2$", "CFI", "TLI", "RMSEA", "SRMR"),
+  digits = 2, 
+  align = "c")
+```
+
+L'analisi CFA svolta solo sulla AI ha mostrato un adattamento migliore per quanto riguarda il **modello bifattoriale**, rispetto a quello unifattoriale, contrariamente alle precedenti aspettative.
+
+## Art knowledge
+
+Nella ricerca originale gli item presenti nella parte C legati alla stessa immagine avevano i residui correlati. Come precedentemente accordato ho provato a svolgere una CFA senza questa correlazione, ma ha mostrato CFI e TLI molto bassi per tutti e tre i modelli. 
+
+Quindi ho selezionato il modello teoricamente più corretto, ossia l'**unifattoriale** e ho svolto la CFA con i residui correlati. 
+
+Di seguito riporto i risultati della CFA unifattoriale senza i residui correlati e il corrplot dei residui dello stesso modello. 
+
+```{r,results='hide', fig.show='hide'}
+Model_AK_1 = "knowledge  =~ B1_Numeric + B2_Numeric + B3_Numeric + B4_Numeric + B5_Numeric + B6_Numeric +
+                            C1_1_Numeric + C1_2_Numeric + C2_1_Numeric + C2_2_Numeric + C3_1_Numeric +
+                            C3_2_Numeric + C4_1_Numeric + C4_2_Numeric + C5_1_Numeric + C5_2_Numeric +
+                            C6_1_Numeric + C6_2_Numeric + C7_1_Numeric + C7_2_Numeric + C8_1_Numeric +
+                            C8_2_Numeric + C9_1_Numeric + C9_2_Numeric + C10_1_Numeric + C10_2_Numeric" # model
+
+AK_one = cfa(Model_AK_1, data = VAIAK, std.lv=TRUE) # run the model
+
+parameters = summary(AK_one, fit.measures=TRUE, standardized = TRUE, ci=TRUE) # parameters
+
+parameters = data.frame(parameters$test$standard$stat[1], parameters$test$standard$pvalue, 
+               unname(parameters$fit[9]), 
+               unname(parameters$fit[10]), 
+               unname(parameters$fit[18]), 
+               unname(parameters$fit[25]))
+
+residuals = residuals(AK_one, type = "cor") # residuals
+```
+
+```{r}
+knitr::kable(
+  parameters, 
+  title = c("Modello unifattoriale AK"),
+  col.names = c("$\\chi^2$","$p$ $\\chi^2$", "CFI", "TLI", "RMSEA", "SRMR"),
+  digits = 2, 
+  align = "c")
+
+residuals = residuals$cov
+
+corrplot(residuals,
+         method = "shade",
+         type = "upper",
+         col.lim = c(-0.6, 0.6))
+```
+
+Si può notare una alta correlazione tra gli item che legati dallo stesso quadro, ossia quello che iniziano con lo stesso identificatore (e.g. C1, C2, ...). Quindi ho aggiunto i residual correlation e ha mostrato un fit migliore. 
+
+```{r,results='hide', fig.show='hide'}
+Model_AK_1 = "knowledge  =~ B1_Numeric + B2_Numeric + B3_Numeric + B4_Numeric + B5_Numeric + B6_Numeric +
+                            C1_1_Numeric + C1_2_Numeric + C2_1_Numeric + C2_2_Numeric + C3_1_Numeric +
+                            C3_2_Numeric + C4_1_Numeric + C4_2_Numeric + C5_1_Numeric + C5_2_Numeric +
+                            C6_1_Numeric + C6_2_Numeric + C7_1_Numeric + C7_2_Numeric + C8_1_Numeric +
+                            C8_2_Numeric + C9_1_Numeric + C9_2_Numeric + C10_1_Numeric + C10_2_Numeric
+
+                            C1_1_Numeric ~~ C1_2_Numeric
+                            C2_1_Numeric ~~ C2_2_Numeric
+                            C3_1_Numeric ~~ C3_2_Numeric
+                            C4_1_Numeric ~~ C4_2_Numeric
+                            C5_1_Numeric ~~ C5_2_Numeric
+                            C6_1_Numeric ~~ C6_2_Numeric
+                            C7_1_Numeric ~~ C7_2_Numeric
+                            C8_1_Numeric ~~ C8_2_Numeric
+                            C9_1_Numeric ~~ C9_2_Numeric
+                            C10_1_Numeric ~~ C10_2_Numeric" # model
+
+AK_one = cfa(Model_AK_1, data = VAIAK, std.lv=TRUE) # run the model
+
+parameters = summary(AK_one, fit.measures=TRUE, standardized = TRUE, ci=TRUE) # parameters
+
+parameters = data.frame(parameters$test$standard$stat[1], parameters$test$standard$pvalue, 
+               unname(parameters$fit[9]), 
+               unname(parameters$fit[10]), 
+               unname(parameters$fit[18]), 
+               unname(parameters$fit[25]))
+
+residuals = residuals(AK_one, type = "cor") # residuals
+```
+
+```{r}
+knitr::kable(
+  parameters,
+  title = c("Modello unifattoriale AK con residual correlation"),
+  col.names = c("$\\chi^2$","$p$ $\\chi^2$", "CFI", "TLI", "RMSEA", "SRMR"),
+  digits = 2, 
+  align = "c")
+```
+
+## Total
+
+Ho poi svolto una CFA per entrambe le scale del questionario. Ho svolto una CFA bifattoriale, con già i residual correlation. 
+
+```{r, results='hide', fig.show='hide'}
+Model_TOT_bi = "interest  =~ AI_1_1 + AI_1_2 + AI_1_3 + AI_1_4 + AI_1_5 + AI_1_6 + AI_1_7 +
+                       AI_2_1 + AI_2_2 + AI_2_3 + AI_2_4
+                       
+                knowledge  =~ B1_Numeric + B2_Numeric + B3_Numeric + B4_Numeric + B5_Numeric + B6_Numeric +
+                        C1_1_Numeric + C1_2_Numeric + C2_1_Numeric + C2_2_Numeric + C3_1_Numeric +
+                        C3_2_Numeric + C4_1_Numeric + C4_2_Numeric + C5_1_Numeric + C5_2_Numeric +
+                        C6_1_Numeric + C6_2_Numeric + C7_1_Numeric + C7_2_Numeric + C8_1_Numeric +
+                        C8_2_Numeric + C9_1_Numeric + C9_2_Numeric + C10_1_Numeric + C10_2_Numeric
+
+                            C1_1_Numeric ~~ C1_2_Numeric
+                            C2_1_Numeric ~~ C2_2_Numeric
+                            C3_1_Numeric ~~ C3_2_Numeric
+                            C4_1_Numeric ~~ C4_2_Numeric
+                            C5_1_Numeric ~~ C5_2_Numeric
+                            C6_1_Numeric ~~ C6_2_Numeric
+                            C7_1_Numeric ~~ C7_2_Numeric
+                            C8_1_Numeric ~~ C8_2_Numeric
+                            C9_1_Numeric ~~ C9_2_Numeric
+                            C10_1_Numeric ~~ C10_2_Numeric" # model
+
+TOT_bi = cfa(Model_TOT_bi, data = VAIAK, std.lv=TRUE) # run the model
+
+parameters = summary(TOT_bi, fit.measures=TRUE, standardized = TRUE, ci=TRUE) # parameters
+
+parameters = data.frame(parameters$test$standard$stat[1], parameters$test$standard$pvalue, 
+               unname(parameters$fit[9]), 
+               unname(parameters$fit[10]), 
+               unname(parameters$fit[18]), 
+               unname(parameters$fit[25]))
+
+residuals = residuals(TOT_bi, type = "cor") # residuals
+```
+
+```{r}
+knitr::kable(
+  parameters, 
+  col.names = c("$\\chi^2$","$p$ $\\chi^2$", "CFI", "TLI", "RMSEA", "SRMR"),
+  digits = 2, 
+  align = "c")
+```
+
+Il che non porta a un buon fit. 
+
+# Conclusioni 
+
+Per concludere queste analisi hanno portato alla luce alcune questioni interessanti. 
+
+La scala AI viene descritta meglio da un modello bifattoriale, che unifattoriale. Questo potrebbe indicare che l'interesse soggettivo e i comportamenti potrebbero essere meglio spiegate come due variabili diverse.  
+
+La scala AK invece può essere descritta come modello unifattoriale, e la presenza di residual correlation tra item legati da una stessa opera d'arte, porta a degli indici accettabili. 
+
+Infine le analisi del modello intero non hanno mostrato un buon fit. 
+
+Sebbene non discussi qui, i modelli gerachici non miglioravano in nessun modo significativo gli indici. 

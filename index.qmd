@@ -1,0 +1,38 @@
+---
+title: "index"
+project: 
+  type: website
+website:
+  title: "Ricerca validazione italiana VAIAK"
+  
+  navbar:
+    left:
+      menu: 
+      - href: index.qmd
+        text: Home
+      - href: VAIAK1.qmd
+        text: Che cos'è il VAIAK
+      - href: VAIAK2.qmd
+        text: Validazione
+      - href: VAIAK3.qmd
+        text: Analisi CFA
+      - href: VAIAK4.qmd
+        text: Analisi IRT
+format: 
+  html
+---
+# VAIAK study 
+
+Questa è la pagina base
+
+## Indice
+
+Se vi serve sapere che cos'è il VAIAK: [Che cos'è il VAIAK](VAIAK1.html)
+
+Per le analisi: 
+
+- [Validazione](VAIAK2.html)
+- [Analisi CFA](VAIAK3.html)
+- [Analisi IRT](VAIAK4.html)
+
+
