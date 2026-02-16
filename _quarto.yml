@@ -3,7 +3,7 @@ project:
   output-dir: docs   # cartella dove verrà generato il sito HTML
 
 website:
-  title: "Il mio sito"
+  title: "Prova2"
   navbar:
     left:
       - href: index.qmd
