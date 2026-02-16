@@ -8,16 +8,14 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - text: Sezione 1
-        menu:
-          - href: pagina1.qmd
-            text: Pagina 1
-          - href: pagina2.qmd
-            text: Pagina 2
-      - text: Sezione 2
-        menu:
-          - href: pagina3.qmd
-            text: Pagina 3
+      - href: VAIAK1.qmd
+        text: Home
+      - href: VAIAK2.qmd
+        text: Home
+      - href: VAIAK3.qmd
+        text: Home
+      - href: VAIAK4.qmd
+        text: Home
 
 format:
   html:
