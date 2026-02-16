@@ -5,7 +5,10 @@ project:
 website:
   title: "Prova2"
   navbar:
-    left:
+      - href: index.qmd
+        text: Home
+      - text: Project
+        menu:
       - href: index.qmd
         text: Home
       - href: VAIAK1.qmd
