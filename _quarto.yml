@@ -1,6 +1,6 @@
 project:
   type: website
-  output-dir: docs   # cartella dove verrà generato il sito HTML
+  output-dir: docs
 
 website:
   title: "Prova2"
@@ -21,4 +21,4 @@ website:
 
 format:
   html:
-    theme: cosmo 
+    theme: cosmo
