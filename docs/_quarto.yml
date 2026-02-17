@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "Prova2"
+  title: "Prova3"
   navbar:
     left: 
       - href: index.qmd
@@ -21,4 +21,5 @@ website:
 
 format:
   html:
-    theme: cosmo
+    theme: slate
+    mainfont: serif;
