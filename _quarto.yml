@@ -5,20 +5,19 @@ project:
 website:
   title: "Prova2"
   navbar:
+    left: 
       - href: index.qmd
         text: Home
       - text: Project
         menu:
-      - href: index.qmd
-        text: Home
-      - href: VAIAK1.qmd
-        text: Home
-      - href: VAIAK2.qmd
-        text: Home
-      - href: VAIAK3.qmd
-        text: Home
-      - href: VAIAK4.qmd
-        text: Home
+          - href: VAIAK1.qmd
+            text: Che cos'è il VAIAK
+          - href: VAIAK2.qmd
+            text: Validazione
+          - href: VAIAK3.qmd
+            text: Analisi CFA
+          - href: VAIAK4.qmd
+            text: Analisi IRT
 
 format:
   html:
